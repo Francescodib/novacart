@@ -39,3 +39,30 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# prisma
+/src/generated/prisma
+prisma/*.db
+prisma/*.db-journal
+
+# IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Internal documentation (not for public repository)
+PUBLISHING.md
+QUICK-PUBLISH.md
+CLAUDE.md
+READY-TO-PUBLISH.txt
+

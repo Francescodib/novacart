@@ -1,0 +1,203 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USER & AUTHENTICATION MODELS
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String?   // Null per OAuth users
+  name          String?
+  image         String?
+  emailVerified DateTime?
+
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+  notifications Notification[]
+  preferences   NotificationPreference?
+  orders        Order[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("users")
+}
+
+// NextAuth.js Models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ============================================
+// NOTIFICATION MODELS
+// ============================================
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type      NotificationType
+  title     String
+  message   String           @db.Text
+  read      Boolean          @default(false)
+
+  // Metadati extra (es. orderId, productId, etc.)
+  metadata  Json?
+
+  // Link di azione (es. "/orders/123")
+  actionUrl String?
+
+  createdAt DateTime         @default(now())
+
+  @@index([userId, read])
+  @@index([userId, createdAt])
+  @@map("notifications")
+}
+
+enum NotificationType {
+  ORDER_CREATED
+  ORDER_PROCESSING
+  ORDER_SHIPPED
+  ORDER_DELIVERED
+  ORDER_CANCELLED
+  NEW_OFFER
+  PROMOTION
+  PRICE_DROP
+  BACK_IN_STOCK
+  SYSTEM
+  ACCOUNT
+}
+
+model NotificationPreference {
+  id                String  @id @default(cuid())
+  userId            String  @unique
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Canali di notifica
+  emailEnabled      Boolean @default(true)
+  pushEnabled       Boolean @default(true)
+
+  // Tipologie
+  orderUpdates      Boolean @default(true)
+  promotions        Boolean @default(true)
+  priceAlerts       Boolean @default(true)
+  backInStock       Boolean @default(true)
+  systemNotifs      Boolean @default(true)
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("notification_preferences")
+}
+
+// ============================================
+// E-COMMERCE MODELS
+// ============================================
+
+model Order {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  orderNumber String      @unique @default(cuid())
+  status      OrderStatus @default(PENDING)
+
+  // Prodotti (JSON array)
+  items       Json
+
+  // Prezzi
+  subtotal    Float
+  tax         Float       @default(0)
+  shipping    Float       @default(0)
+  total       Float
+
+  // Indirizzo di spedizione
+  shippingAddress Json?
+
+  // Tracking
+  trackingNumber  String?
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String?  @db.Text
+  price       Float
+  oldPrice    Float?   // Per price drop alerts
+  stock       Int      @default(0)
+  image       String?
+  category    String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([stock])
+  @@index([price])
+  @@map("products")
+}
