@@ -12,7 +12,7 @@ export default function LoginPage() {
    const router = useRouter();
    const searchParams = useSearchParams();
 
-   // Ottieni il callbackUrl dai query params, default a /dashboard
+   // Get callbackUrl from query params, default to /dashboard
    const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
    const handleSubmit = async (e: React.FormEvent) => {
@@ -28,14 +28,14 @@ export default function LoginPage() {
          });
 
          if (result?.error) {
-            setError("Credenziali non valide");
+            setError("Invalid credentials");
             setLoading(false);
          } else {
-            // Login riuscito, redirect al callbackUrl
+            // Login successful, redirect to callbackUrl
             router.push(callbackUrl);
          }
       } catch (err) {
-         setError("Errore durante il login");
+         setError("Error during login");
          setLoading(false);
       }
    };
@@ -46,7 +46,7 @@ export default function LoginPage() {
             <div className="bg-gray-800 rounded-lg shadow-xl border border-gray-700 p-8">
                <div className="text-center mb-8">
                   <h1 className="text-3xl font-bold text-white mb-2">NovaCart</h1>
-                  <p className="text-gray-400">Accedi al tuo account</p>
+                  <p className="text-gray-400">Log in to your account</p>
                </div>
 
                <form onSubmit={handleSubmit} className="space-y-6">
@@ -91,14 +91,14 @@ export default function LoginPage() {
                      disabled={loading}
                      className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition"
                   >
-                     {loading ? "Accesso in corso..." : "Accedi"}
+                     {loading ? "Logging in..." : "Log In"}
                   </button>
                </form>
 
                <div className="mt-8 pt-6 border-t border-gray-700">
                   <div className="bg-blue-900/30 border border-blue-500/50 rounded-lg p-4">
                      <p className="text-sm text-blue-300 font-semibold mb-2">
-                        🧪 Credenziali di test:
+                        🧪 Test credentials:
                      </p>
                      <p className="text-xs text-gray-300 font-mono">
                         Email: test@novacart.com<br />

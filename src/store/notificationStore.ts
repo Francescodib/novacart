@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-// Tipo per una notifica (allineato al modello Prisma)
+// Type for a notification (aligned with Prisma model)
 export type Notification = {
    id: string;
    userId: string;
@@ -13,7 +13,7 @@ export type Notification = {
    createdAt: Date | string;
 };
 
-// Tipo per lo state dello store
+// Type for store state
 type NotificationState = {
    // State
    notifications: Notification[];
@@ -86,17 +86,17 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
          });
 
          if (res.ok) {
-            // Aggiorna lo store locale
+            // Update local store
             set((state) => ({
                notifications: state.notifications.map((n) => ({ ...n, read: true })),
                unreadCount: 0,
             }));
          } else {
             const data = await res.json();
-            set({ error: data.error || "Errore nell'aggiornamento" });
+            set({ error: data.error || "Update error" });
          }
       } catch (error) {
-         set({ error: "Errore di rete" });
+         set({ error: "Network error" });
       }
    },
 
@@ -118,10 +118,10 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
          if (res.ok) {
             get().setNotifications(data.notifications);
          } else {
-            set({ error: data.error || "Errore nel caricamento" });
+            set({ error: data.error || "Loading error" });
          }
       } catch (error) {
-         set({ error: "Errore di rete" });
+         set({ error: "Network error" });
       } finally {
          set({ loading: false });
       }
@@ -137,10 +137,10 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
             get().removeNotification(id);
          } else {
             const data = await res.json();
-            set({ error: data.error || "Errore nell'eliminazione" });
+            set({ error: data.error || "Delete error" });
          }
       } catch (error) {
-         set({ error: "Errore di rete" });
+         set({ error: "Network error" });
       }
    },
 }));

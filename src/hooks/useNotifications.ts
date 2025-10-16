@@ -2,17 +2,17 @@ import { useNotificationStore } from "@/store/notificationStore";
 import type { Notification } from "@/store/notificationStore";
 
 /**
- * Custom hook per gestire le notifiche
- * Wrapper semplificato dello store Zustand
+ * Custom hook to manage notifications
+ * Simplified wrapper of Zustand store
  */
 export function useNotifications() {
-   // State dallo store
+   // State from store
    const notifications = useNotificationStore((state) => state.notifications);
    const loading = useNotificationStore((state) => state.loading);
    const error = useNotificationStore((state) => state.error);
    const unreadCount = useNotificationStore((state) => state.unreadCount);
 
-   // Actions dallo store
+   // Actions from store
    const fetchNotifications = useNotificationStore((state) => state.fetchNotifications);
    const deleteNotification = useNotificationStore((state) => state.deleteNotification);
    const markAsRead = useNotificationStore((state) => state.markAsRead);
@@ -21,7 +21,7 @@ export function useNotifications() {
    const addNotification = useNotificationStore((state) => state.addNotification);
    const updateNotification = useNotificationStore((state) => state.updateNotification);
 
-   // Helper function: Crea una nuova notifica tramite API
+   // Helper function: Create a new notification via API
    const createNotification = async (
       userId: string,
       type: string,
@@ -49,16 +49,16 @@ export function useNotifications() {
          if (res.ok) {
             return { success: true, notification: data.notification };
          } else {
-            return { success: false, error: data.error || "Errore nella creazione" };
+            return { success: false, error: data.error || "Error creating notification" };
          }
       } catch (error) {
-         return { success: false, error: "Errore di rete" };
+         return { success: false, error: "Network error" };
       } finally {
          useNotificationStore.getState().setLoading(false);
       }
    };
 
-   // Helper function: Segna come letta tramite API
+   // Helper function: Mark as read via API
    const markAsReadAPI = async (id: string): Promise<{ success: boolean; error?: string }> => {
       try {
          const res = await fetch(`/api/notifications/${id}/mark-read`, {
@@ -66,21 +66,21 @@ export function useNotifications() {
          });
 
          if (res.ok) {
-            markAsRead(id); // Aggiorna anche lo store locale
+            markAsRead(id); // Update local store too
             return { success: true };
          } else {
             const data = await res.json();
-            return { success: false, error: data.error || "Errore nell'aggiornamento" };
+            return { success: false, error: data.error || "Error updating notification" };
          }
       } catch (error) {
-         return { success: false, error: "Errore di rete" };
+         return { success: false, error: "Network error" };
       }
    };
 
-   // Helper function: Ottieni solo le notifiche non lette
+   // Helper function: Get only unread notifications
    const unreadNotifications = notifications.filter((n) => !n.read);
 
-   // Helper function: Ottieni solo le notifiche lette
+   // Helper function: Get only read notifications
    const readNotifications = notifications.filter((n) => n.read);
 
    return {
@@ -100,7 +100,7 @@ export function useNotifications() {
       delete: deleteNotification,
       clear: clearAll,
 
-      // Advanced (per usi speciali)
+      // Advanced (for special uses)
       addNotification,
       updateNotification,
    };

@@ -53,11 +53,11 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                {/* Header */}
                <div className="p-4 border-b border-gray-700">
                   <div className="flex items-center justify-between mb-3">
-                     <h3 className="text-lg font-bold text-white">Notifiche</h3>
+                     <h3 className="text-lg font-bold text-white">Notifications</h3>
                      <button
                         onClick={onClose}
                         className="text-gray-400 hover:text-white transition"
-                        aria-label="Chiudi"
+                        aria-label="Close"
                      >
                         <svg
                            className="w-5 h-5"
@@ -75,9 +75,9 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                      </button>
                   </div>
 
-                  {/* Filtri e Azioni */}
+                  {/* Filters and Actions */}
                   <div className="flex items-center justify-between gap-2">
-                     {/* Filtri */}
+                     {/* Filters */}
                      <div className="flex gap-2">
                         <button
                            onClick={() => setFilter("all")}
@@ -89,7 +89,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                               }
                            `}
                         >
-                           Tutte ({notifications.length})
+                           All ({notifications.length})
                         </button>
                         <button
                            onClick={() => setFilter("unread")}
@@ -101,39 +101,39 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                               }
                            `}
                         >
-                           Non lette ({unreadNotifications.length})
+                           Unread ({unreadNotifications.length})
                         </button>
                      </div>
 
-                     {/* Segna tutte come lette */}
+                     {/* Mark all as read */}
                      {unreadNotifications.length > 0 && (
                         <button
                            onClick={handleMarkAllAsRead}
                            className="text-xs text-blue-400 hover:text-blue-300 transition"
                         >
-                           Segna tutte
+                           Mark all
                         </button>
                      )}
                   </div>
                </div>
 
-               {/* Lista Notifiche */}
+               {/* Notifications List */}
                <div className="max-h-[500px] overflow-y-auto">
                   {loading ? (
                      <div className="p-8 text-center">
                         <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-                        <p className="mt-2 text-sm text-gray-400">Caricamento...</p>
+                        <p className="mt-2 text-sm text-gray-400">Loading...</p>
                      </div>
                   ) : displayedNotifications.length === 0 ? (
                      <div className="p-8 text-center">
                         <div className="text-5xl mb-2">📭</div>
                         <p className="text-gray-400 font-medium">
-                           {filter === "unread" ? "Nessuna notifica non letta" : "Nessuna notifica"}
+                           {filter === "unread" ? "No unread notifications" : "No notifications"}
                         </p>
                         <p className="text-sm text-gray-500 mt-1">
                            {filter === "unread"
-                              ? "Tutte le notifiche sono state lette!"
-                              : "Quando riceverai notifiche, appariranno qui."}
+                              ? "All notifications have been read!"
+                              : "When you receive notifications, they will appear here."}
                         </p>
                      </div>
                   ) : (
@@ -145,11 +145,11 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                               onMarkAsRead={handleMarkAsRead}
                               onDelete={handleDelete}
                               onClick={() => {
-                                 // Se c'è un actionUrl, naviga
+                                 // If there's an actionUrl, navigate
                                  if (notification.actionUrl) {
                                     window.location.href = notification.actionUrl;
                                  }
-                                 // Segna come letta se non lo è già
+                                 // Mark as read if not already
                                  if (!notification.read) {
                                     handleMarkAsRead(notification.id);
                                  }
@@ -167,7 +167,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                         onClick={onClose}
                         className="w-full text-center text-sm text-blue-400 hover:text-blue-300 font-medium transition"
                      >
-                        Chiudi
+                        Close
                      </button>
                   </div>
                )}

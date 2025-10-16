@@ -12,10 +12,10 @@ export default function DashboardPage() {
    const [isNotificationCenterOpen, setIsNotificationCenterOpen] = useState(false);
    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
-   // Ottieni sessione utente
+   // Get user session
    const { data: session, status } = useSession();
 
-   // Connetti al WebSocket solo se autenticato
+   // Connect to WebSocket only if authenticated
    const { connected } = useSocket({
       userId: session?.user?.id || "",
       token: session?.user?.accessToken || "",
@@ -23,44 +23,44 @@ export default function DashboardPage() {
 
    const { unreadCount, fetch: fetchNotifications } = useNotifications();
 
-   // Carica notifiche al mount
+   // Load notifications on mount
    useEffect(() => {
       if (session?.user?.id) {
          fetchNotifications();
       }
    }, [fetchNotifications, session?.user?.id]);
 
-   // Mostra loading mentre carica la sessione
+   // Show loading while loading session
    if (status === "loading") {
       return (
          <div className="min-h-screen bg-gray-900 flex items-center justify-center">
             <div className="text-center">
                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mb-4"></div>
-               <p className="text-white text-lg">Caricamento...</p>
+               <p className="text-white text-lg">Loading...</p>
             </div>
          </div>
       );
    }
 
-   // Redirect a login se non autenticato
+   // Redirect to login if not authenticated
    if (status === "unauthenticated" || !session?.user?.id) {
       return (
          <div className="min-h-screen bg-gray-900 flex items-center justify-center">
             <div className="text-center max-w-md">
-               <h1 className="text-3xl font-bold text-white mb-4">🔒 Accesso Richiesto</h1>
+               <h1 className="text-3xl font-bold text-white mb-4">🔒 Access Required</h1>
                <p className="text-gray-300 mb-6">
-                  Devi essere autenticato per accedere alla dashboard.
+                  You must be authenticated to access the dashboard.
                </p>
                <Link
                   href="/auth/login?callbackUrl=/dashboard"
                   className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
                >
-                  Vai al Login
+                  Go to Login
                </Link>
                <p className="text-gray-500 text-sm mt-4">
-                  Per testing, usa la{" "}
+                  For testing, use the{" "}
                   <a href="/test-socket" className="text-blue-400 underline">
-                     pagina di test
+                     test page
                   </a>
                </p>
             </div>
@@ -85,19 +85,19 @@ export default function DashboardPage() {
                   {/* Navigation */}
                   <div className="hidden md:flex items-center gap-6">
                      <a href="#" className="text-gray-300 hover:text-white transition">
-                        Prodotti
+                        Products
                      </a>
                      <a href="#" className="text-gray-300 hover:text-white transition">
-                        Offerte
+                        Offers
                      </a>
                      <a href="#" className="text-gray-300 hover:text-white transition">
-                        Carrello
+                        Cart
                      </a>
                   </div>
 
                   {/* Actions */}
                   <div className="flex items-center gap-4">
-                     {/* Status Connection (solo per debug) */}
+                     {/* Connection Status (for debug only) */}
                      <div className="hidden sm:flex items-center gap-2">
                         <div
                            className={`w-2 h-2 rounded-full ${connected ? "bg-green-500" : "bg-red-500"}`}
@@ -159,18 +159,18 @@ export default function DashboardPage() {
             {/* Hero Section */}
             <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 mb-8 shadow-xl">
                <h2 className="text-3xl font-bold text-white mb-2">
-                  Benvenuto su NovaCart! 🛒
+                  Welcome to NovaCart! 🛒
                </h2>
                <p className="text-blue-100 mb-4">
-                  Il tuo e-commerce con notifiche in tempo reale. Ricevi aggiornamenti istantanei
-                  sui tuoi ordini, offerte esclusive e molto altro!
+                  Your e-commerce with real-time notifications. Receive instant updates
+                  about your orders, exclusive offers and much more!
                </p>
                <div className="flex gap-4">
                   <button className="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition">
-                     Scopri i Prodotti
+                     Discover Products
                   </button>
                   <button className="bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-800 transition">
-                     Vedi Offerte
+                     View Offers
                   </button>
                </div>
             </div>
@@ -179,7 +179,7 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
                   <div className="flex items-center justify-between mb-2">
-                     <h3 className="text-gray-400 text-sm font-medium">Notifiche Non Lette</h3>
+                     <h3 className="text-gray-400 text-sm font-medium">Unread Notifications</h3>
                      <span className="text-2xl">📬</span>
                   </div>
                   <p className="text-3xl font-bold text-white">{unreadCount}</p>
@@ -187,7 +187,7 @@ export default function DashboardPage() {
 
                <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
                   <div className="flex items-center justify-between mb-2">
-                     <h3 className="text-gray-400 text-sm font-medium">Ordini Attivi</h3>
+                     <h3 className="text-gray-400 text-sm font-medium">Active Orders</h3>
                      <span className="text-2xl">📦</span>
                   </div>
                   <p className="text-3xl font-bold text-white">3</p>
@@ -195,7 +195,7 @@ export default function DashboardPage() {
 
                <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
                   <div className="flex items-center justify-between mb-2">
-                     <h3 className="text-gray-400 text-sm font-medium">Offerte Disponibili</h3>
+                     <h3 className="text-gray-400 text-sm font-medium">Available Offers</h3>
                      <span className="text-2xl">🎉</span>
                   </div>
                   <p className="text-3xl font-bold text-white">12</p>
@@ -204,7 +204,7 @@ export default function DashboardPage() {
 
             {/* Products Section */}
             <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
-               <h3 className="text-xl font-bold text-white mb-4">Prodotti in Evidenza</h3>
+               <h3 className="text-xl font-bold text-white mb-4">Featured Products</h3>
                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {[1, 2, 3, 4].map((i) => (
                      <div
@@ -214,12 +214,12 @@ export default function DashboardPage() {
                         <div className="w-full h-32 bg-gray-600 rounded-lg mb-3 flex items-center justify-center text-4xl">
                            📱
                         </div>
-                        <h4 className="text-white font-semibold mb-1">Prodotto {i}</h4>
-                        <p className="text-gray-400 text-sm mb-2">Descrizione breve</p>
+                        <h4 className="text-white font-semibold mb-1">Product {i}</h4>
+                        <p className="text-gray-400 text-sm mb-2">Short description</p>
                         <div className="flex items-center justify-between">
                            <span className="text-blue-400 font-bold">€99.99</span>
                            <button className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition">
-                              Aggiungi
+                              Add
                            </button>
                         </div>
                      </div>
@@ -230,11 +230,11 @@ export default function DashboardPage() {
             {/* Info Footer */}
             <div className="mt-8 text-center">
                <p className="text-gray-500 text-sm">
-                  💡 <strong>Prova le notifiche:</strong> Vai alla{" "}
+                  💡 <strong>Try notifications:</strong> Go to the{" "}
                   <a href="/test-socket" className="text-blue-400 hover:text-blue-300 underline">
-                     pagina di test
+                     test page
                   </a>{" "}
-                  per creare notifiche e vedere il sistema in azione!
+                  to create notifications and see the system in action!
                </p>
             </div>
          </main>

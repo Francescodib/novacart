@@ -4,8 +4,8 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 
 const registerSchema = z.object({
-  email: z.string().email("Email non valida"),
-  password: z.string().min(8, "La password deve essere di almeno 8 caratteri"),
+  email: z.string().email("Invalid email"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
   name: z.string().optional(),
 });
 
@@ -13,25 +13,25 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Validazione input
+    // Input validation
     const validatedData = registerSchema.parse(body);
 
-    // Verifica se l'utente esiste già
+    // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email: validatedData.email },
     });
 
     if (existingUser) {
       return NextResponse.json(
-        { error: "Utente già registrato con questa email" },
+        { error: "User already registered with this email" },
         { status: 400 }
       );
     }
 
-    // Hash della password
+    // Hash password
     const hashedPassword = await bcrypt.hash(validatedData.password, 10);
 
-    // Crea l'utente
+    // Create user
     const user = await prisma.user.create({
       data: {
         email: validatedData.email,
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Crea le preferenze di notifica di default
+    // Create default notification preferences
     await prisma.notificationPreference.create({
       data: {
         userId: user.id,
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       {
-        message: "Utente registrato con successo",
+        message: "User registered successfully",
         user,
       },
       { status: 201 }
@@ -63,14 +63,14 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: "Dati non validi", details: error.errors },
+        { error: "Invalid data", details: error.errors },
         { status: 400 }
       );
     }
 
-    console.error("Errore durante la registrazione:", error);
+    console.error("Error during registration:", error);
     return NextResponse.json(
-      { error: "Errore del server" },
+      { error: "Server error" },
       { status: 500 }
     );
   }

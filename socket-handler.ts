@@ -3,7 +3,7 @@ import { prisma } from "./src/lib/db";
 import { NotificationType, Prisma } from "./src/generated/prisma";
 import jwt from "jsonwebtoken";
 
-// Mappa per tracciare utenti connessi
+// Map to track connected users
 // userId → socketId
 const connectedUsers = new Map<string, string>();
 
@@ -13,7 +13,7 @@ export function initSocketHandlers(io: SocketIOServer) {
    io.on("connection", async (socket: Socket) => {
       console.log(`✅ Client connected: ${socket.id}`);
 
-      // 1. AUTENTICAZIONE - Valida JWT
+      // 1. AUTHENTICATION - Validate JWT
       const token = socket.handshake.auth.token;
       const userId = socket.handshake.auth.userId;
 
@@ -21,27 +21,27 @@ export function initSocketHandlers(io: SocketIOServer) {
 
       if (!token) {
          console.log(`❌ Unauthorized connection from ${socket.id}: no token`);
-         socket.emit("error", { message: "Token di autenticazione mancante" });
+         socket.emit("error", { message: "Missing authentication token" });
          socket.disconnect();
          return;
       }
 
       if (!userId) {
          console.log(`❌ Unauthorized connection from ${socket.id}: no userId`);
-         socket.emit("error", { message: "User ID mancante" });
+         socket.emit("error", { message: "Missing user ID" });
          socket.disconnect();
          return;
       }
 
-      // Valida il JWT token
+      // Validate JWT token
       try {
          const jwtSecret = process.env.NEXTAUTH_SECRET || "fallback-secret-change-in-production";
          const decoded = jwt.verify(token, jwtSecret) as { userId: string; email: string };
 
-         // Verifica che l'userId nel token corrisponda a quello richiesto
+         // Verify that the userId in the token matches the requested one
          if (decoded.userId !== userId) {
             console.log(`❌ Token mismatch from ${socket.id}: token userId=${decoded.userId}, requested userId=${userId}`);
-            socket.emit("error", { message: "Token non valido per questo utente" });
+            socket.emit("error", { message: "Invalid token for this user" });
             socket.disconnect();
             return;
          }
@@ -49,19 +49,19 @@ export function initSocketHandlers(io: SocketIOServer) {
          console.log(`✅ JWT verified for user ${userId} (${decoded.email})`);
       } catch (error) {
          console.log(`❌ Invalid JWT from ${socket.id}:`, error instanceof Error ? error.message : "Unknown error");
-         socket.emit("error", { message: "Token non valido o scaduto" });
+         socket.emit("error", { message: "Invalid or expired token" });
          socket.disconnect();
          return;
       }
 
-      // 2. JOIN ROOM PERSONALE
+      // 2. JOIN PERSONAL ROOM
       const roomName = `user:${userId}`;
       await socket.join(roomName);
       connectedUsers.set(userId, socket.id);
 
       console.log(`👤 User ${userId} joined room: ${roomName}`);
 
-      // Invia notifiche non lette all'utente
+      // Send unread notifications to user
       try {
          const unreadNotifications = await prisma.notification.findMany({
             where: {
@@ -80,9 +80,9 @@ export function initSocketHandlers(io: SocketIOServer) {
          console.error("Error fetching notifications:", error);
       }
 
-      // 3. EVENTI IN ASCOLTO
+      // 3. LISTENING EVENTS
 
-      // Quando il client segna una notifica come letta
+      // When client marks a notification as read
       socket.on("notification:mark-read", async (notificationId: string) => {
          try {
             await prisma.notification.update({
@@ -94,11 +94,11 @@ export function initSocketHandlers(io: SocketIOServer) {
             console.log(`✔️ Notification ${notificationId} marked as read`);
          } catch (error) {
             console.error("Error marking notification as read:", error);
-            socket.emit("error", { message: "Errore durante l'aggiornamento" });
+            socket.emit("error", { message: "Error updating notification" });
          }
       });
 
-      // Quando il client richiede tutte le notifiche
+      // When client requests all notifications
       socket.on("notifications:fetch", async ({ limit = 20, offset = 0 }) => {
          try {
             const notifications = await prisma.notification.findMany({
@@ -111,11 +111,11 @@ export function initSocketHandlers(io: SocketIOServer) {
             socket.emit("notifications:list", notifications);
          } catch (error) {
             console.error("Error fetching notifications:", error);
-            socket.emit("error", { message: "Errore durante il recupero" });
+            socket.emit("error", { message: "Error fetching notifications" });
          }
       });
 
-      // 4. DISCONNESSIONE
+      // 4. DISCONNECTION
       socket.on("disconnect", () => {
          connectedUsers.delete(userId);
          console.log(`❌ User ${userId} disconnected (${socket.id})`);
@@ -123,7 +123,7 @@ export function initSocketHandlers(io: SocketIOServer) {
    });
 }
 
-// Funzione helper per inviare notifica a un utente specifico
+// Helper function to send notification to a specific user
 export function sendNotificationToUser(
    io: SocketIOServer,
    userId: string,

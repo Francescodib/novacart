@@ -17,7 +17,7 @@ export function NotificationItem({
    compact = false,
    showActions = true,
 }: NotificationItemProps) {
-   // Mappa i tipi di notifica a icone/colori
+   // Map notification types to icons/colors
    const typeConfig = {
       ORDER_SHIPPED: { icon: "📦", color: "bg-blue-500" },
       ORDER_DELIVERED: { icon: "✅", color: "bg-green-500" },
@@ -46,17 +46,17 @@ export function NotificationItem({
          `}
       >
          <div className="flex gap-3">
-            {/* Icona */}
+            {/* Icon */}
             <div
                className={`
-                  flex-shrink-0 w-10 h-10 rounded-full ${config.color} 
+                  flex-shrink-0 w-10 h-10 rounded-full ${config.color}
                   flex items-center justify-center text-xl
                `}
             >
                {config.icon}
             </div>
 
-            {/* Contenuto */}
+            {/* Content */}
             <div className="flex-1 min-w-0">
                <div className="flex items-start justify-between gap-2 mb-1">
                   <h4 className="font-semibold text-white text-sm">
@@ -77,7 +77,7 @@ export function NotificationItem({
                         {notification.type.replace(/_/g, " ")}
                      </span>
                      <span>
-                        {new Date(notification.createdAt).toLocaleDateString("it-IT", {
+                        {new Date(notification.createdAt).toLocaleDateString("en-US", {
                            day: "numeric",
                            month: "short",
                            hour: "2-digit",
@@ -88,7 +88,7 @@ export function NotificationItem({
                )}
             </div>
 
-            {/* Azioni */}
+            {/* Actions */}
             {showActions && !compact && (
                <div className="flex flex-col gap-1 ml-2">
                   {!notification.read && onMarkAsRead && (
@@ -98,7 +98,7 @@ export function NotificationItem({
                            onMarkAsRead(notification.id);
                         }}
                         className="p-1.5 text-green-400 hover:text-green-300 hover:bg-gray-700 rounded transition"
-                        title="Segna come letta"
+                        title="Mark as read"
                      >
                         <svg
                            className="w-4 h-4"
@@ -123,7 +123,7 @@ export function NotificationItem({
                            onDelete(notification.id);
                         }}
                         className="p-1.5 text-red-400 hover:text-red-300 hover:bg-gray-700 rounded transition"
-                        title="Elimina"
+                        title="Delete"
                      >
                         <svg
                            className="w-4 h-4"

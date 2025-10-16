@@ -3,22 +3,22 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getSocketInstance } from "@/lib/socket-server";
 
-// GET /api/notifications - Ottiene notifiche dell'utente
+// GET /api/notifications - Get user notifications
 export async function GET(request: NextRequest) {
    try {
-      // 1. Verifica autenticazione
+      // 1. Verify authentication
       const session = await auth();
 
       if (!session?.user?.id) {
          return NextResponse.json(
-            { error: "Non autenticato. Effettua il login." },
+            { error: "Not authenticated. Please log in." },
             { status: 401 }
          );
       }
 
       const userId = session.user.id;
 
-      // 2. Ottieni parametri query (per paginazione)
+      // 2. Get query parameters (for pagination)
       const { searchParams } = new URL(request.url);
       const limit = parseInt(searchParams.get("limit") || "20");
       const offset = parseInt(searchParams.get("offset") || "0");
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
          skip: offset,
       });
 
-      // 4. Conta totale (per paginazione)
+      // 4. Count total (for pagination)
       const total = await prisma.notification.count({
          where: {
             userId: userId,
@@ -52,43 +52,43 @@ export async function GET(request: NextRequest) {
          offset,
       });
    } catch (error) {
-      console.error("Errore GET /api/notifications:", error);
+      console.error("Error GET /api/notifications:", error);
       return NextResponse.json(
-         { error: "Errore del server" },
+         { error: "Server error" },
          { status: 500 }
       );
    }
 }
 
-// POST /api/notifications - Crea una nuova notifica
+// POST /api/notifications - Create a new notification
 export async function POST(request: NextRequest) {
    try {
-      // 1. Verifica autenticazione - Solo admin/sistema possono creare notifiche
+      // 1. Verify authentication - Only admin/system can create notifications
       const session = await auth();
 
-      // Per sicurezza, solo gli admin dovrebbero poter creare notifiche per altri utenti
-      // Per ora accettiamo utenti autenticati, ma in produzione aggiungi check del ruolo
+      // For security, only admins should be able to create notifications for other users
+      // For now we accept authenticated users, but in production add role check
       if (!session?.user?.id) {
          return NextResponse.json(
-            { error: "Non autenticato. Effettua il login." },
+            { error: "Not authenticated. Please log in." },
             { status: 401 }
          );
       }
 
-      // 2. Leggi e valida il body
+      // 2. Read and validate body
       const body = await request.json();
 
       const { userId, type, title, message, metadata, actionUrl } = body;
 
-      // Validazione base
+      // Basic validation
       if (!userId || !type || !title || !message) {
          return NextResponse.json(
-            { error: "Campi obbligatori mancanti: userId, type, title, message" },
+            { error: "Missing required fields: userId, type, title, message" },
             { status: 400 }
          );
       }
 
-      // 3. Crea la notifica nel database
+      // 3. Create notification in database
       const notification = await prisma.notification.create({
          data: {
             userId,
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
          },
       });
 
-      // 4. Invia via WebSocket in real-time!
+      // 4. Send via WebSocket in real-time!
       const io = getSocketInstance();
       if (io) {
          const roomName = `user:${userId}`;
@@ -110,18 +110,18 @@ export async function POST(request: NextRequest) {
          console.warn("⚠️ Socket.io instance not available");
       }
 
-      // 5. Ritorna la notifica creata
+      // 5. Return created notification
       return NextResponse.json(
          {
-            message: "Notifica creata con successo",
+            message: "Notification created successfully",
             notification,
          },
          { status: 201 }
       );
    } catch (error) {
-      console.error("Errore POST /api/notifications:", error);
+      console.error("Error POST /api/notifications:", error);
       return NextResponse.json(
-         { error: "Errore del server" },
+         { error: "Server error" },
          { status: 500 }
       );
    }

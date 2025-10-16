@@ -9,59 +9,59 @@ export async function PUT(
    { params }: { params: { id: string } }
 ) {
    try {
-      // Verifica autenticazione
+      // Verify authentication
       const session = await auth();
       if (!session?.user?.id) {
          return NextResponse.json(
-            { error: "Non autenticato. Effettua il login." },
+            { error: "Not authenticated. Please log in." },
             { status: 401 }
          );
       }
 
       const { id: notificationId } = await params;
 
-      // Verifica che la notifica esista
+      // Verify that notification exists
       const existingNotification = await prisma.notification.findUnique({
          where: { id: notificationId },
       });
 
       if (!existingNotification) {
          return NextResponse.json(
-            { error: "Notifica non trovata" },
+            { error: "Notification not found" },
             { status: 404 }
          );
       }
 
-      // Verifica ownership: solo il proprietario può segnare come letta
+      // Verify ownership: only the owner can mark as read
       if (existingNotification.userId !== session.user.id) {
          return NextResponse.json(
-            { error: "Non autorizzato. Non puoi modificare notifiche di altri utenti." },
+            { error: "Not authorized. You cannot modify other users' notifications." },
             { status: 403 }
          );
       }
 
-      // Aggiorna la notifica
+      // Update notification
       const notification = await prisma.notification.update({
          where: { id: notificationId },
          data: { read: true },
       });
 
-      // 🔥 Emetti evento WebSocket per sincronizzare tutte le tab
+      // 🔥 Emit WebSocket event to synchronize all tabs
       const io = getSocketInstance();
       if (io) {
          const roomName = `user:${existingNotification.userId}`;
          io.to(roomName).emit("notification:updated", notification);
-         console.log(`📢 Notifica ${notificationId} aggiornata via WebSocket`);
+         console.log(`📢 Notification ${notificationId} updated via WebSocket`);
       }
 
       return NextResponse.json({
-         message: "Notifica segnata come letta",
+         message: "Notification marked as read",
          notification,
       });
    } catch (error) {
-      console.error("Errore PUT /api/notifications/[id]/mark-read:", error);
+      console.error("Error PUT /api/notifications/[id]/mark-read:", error);
       return NextResponse.json(
-         { error: "Errore del server" },
+         { error: "Server error" },
          { status: 500 }
       );
    }

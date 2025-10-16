@@ -16,15 +16,15 @@ export function useSocket({ userId, token, onConnect, onDisconnect, onError }: U
    const [connected, setConnected] = useState(false);
    const [socket, setSocket] = useState<Socket | null>(null);
 
-   // Otteniamo le actions dello store
+   // Get actions from store
    const { setNotifications, addNotification, updateNotification, removeNotification } = useNotificationStore();
 
-   // Usa useRef per stabilizzare i callbacks e prevenire loop
+   // Use useRef to stabilize callbacks and prevent loops
    const onConnectRef = useRef(onConnect);
    const onDisconnectRef = useRef(onDisconnect);
    const onErrorRef = useRef(onError);
 
-   // Aggiorna i ref quando i callbacks cambiano
+   // Update refs when callbacks change
    useEffect(() => {
       onConnectRef.current = onConnect;
       onDisconnectRef.current = onDisconnect;
@@ -32,63 +32,63 @@ export function useSocket({ userId, token, onConnect, onDisconnect, onError }: U
    }, [onConnect, onDisconnect, onError]);
 
    useEffect(() => {
-      // Ottieni l'istanza del socket
+      // Get socket instance
       const socketInstance = getSocket(userId, token);
 
       if (!socketInstance) {
-         console.error("❌ Impossibile creare l'istanza del socket");
+         console.error("❌ Unable to create socket instance");
          return;
       }
 
       setSocket(socketInstance);
 
-      // Handler: Connessione
+      // Handler: Connection
       const handleConnect = () => {
-         console.log("🔌 WebSocket connesso");
+         console.log("🔌 WebSocket connected");
          setConnected(true);
          onConnectRef.current?.();
       };
 
-      // Handler: Disconnessione
+      // Handler: Disconnection
       const handleDisconnect = () => {
-         console.log("🔌 WebSocket disconnesso");
+         console.log("🔌 WebSocket disconnected");
          setConnected(false);
          onDisconnectRef.current?.();
       };
 
-      // Handler: Errore
+      // Handler: Error
       const handleError = (error: Error) => {
-         console.error("❌ WebSocket errore:", error);
+         console.error("❌ WebSocket error:", error);
          onErrorRef.current?.(error);
       };
 
-      // Handler: Notifiche iniziali (quando ci si connette)
+      // Handler: Initial notifications (when connecting)
       const handleNotificationsInitial = (notifications: Notification[]) => {
-         console.log(`📬 Ricevute ${notifications.length} notifiche iniziali dal WebSocket`);
-         // Non sovrascrivere, il caricamento completo viene fatto tramite fetchNotifications
+         console.log(`📬 Received ${notifications.length} initial notifications from WebSocket`);
+         // Don't overwrite, full loading is done via fetchNotifications
       };
 
-      // Handler: Nuova notifica in tempo reale
+      // Handler: New notification in real-time
       const handleNotificationNew = (notification: Notification) => {
-         console.log("🎯 Nuova notifica ricevuta:", notification);
+         console.log("🎯 New notification received:", notification);
          addNotification(notification);
       };
 
-      // Handler: Notifica aggiornata (da altra tab)
+      // Handler: Updated notification (from another tab)
       const handleNotificationUpdated = (notification: Notification) => {
-         console.log("🔄 Notifica aggiornata ricevuta:", notification);
+         console.log("🔄 Updated notification received:", notification);
          updateNotification(notification.id, notification);
       };
 
-      // Handler: Notifica eliminata (da altra tab)
+      // Handler: Deleted notification (from another tab)
       const handleNotificationDeleted = (data: { id: string }) => {
-         console.log("🗑️ Notifica eliminata ricevuta:", data.id);
+         console.log("🗑️ Deleted notification received:", data.id);
          removeNotification(data.id);
       };
 
-      // Handler: Tutte le notifiche segnate come lette (da altra tab)
+      // Handler: All notifications marked as read (from another tab)
       const handleAllRead = () => {
-         console.log("✅ Tutte le notifiche segnate come lette");
+         console.log("✅ All notifications marked as read");
          const notifications = useNotificationStore.getState().notifications;
          notifications.forEach((n) => {
             if (!n.read) {
@@ -97,7 +97,7 @@ export function useSocket({ userId, token, onConnect, onDisconnect, onError }: U
          });
       };
 
-      // Registra tutti i listener
+      // Register all listeners
       socketInstance.on("connect", handleConnect);
       socketInstance.on("disconnect", handleDisconnect);
       socketInstance.on("error", handleError);
@@ -108,10 +108,10 @@ export function useSocket({ userId, token, onConnect, onDisconnect, onError }: U
       socketInstance.on("notifications:all-read", handleAllRead);
 
 
-      // Connetti il socket
+      // Connect socket
       socketInstance.connect();
 
-      // Cleanup: rimuovi listener e disconnetti
+      // Cleanup: remove listeners and disconnect
       return () => {
          socketInstance.off("connect", handleConnect);
          socketInstance.off("disconnect", handleDisconnect);

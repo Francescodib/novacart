@@ -6,19 +6,19 @@ import { getSocketInstance } from "@/lib/socket-server";
 // PUT /api/notifications/mark-all-read
 export async function PUT(request: NextRequest) {
    try {
-      // Verifica autenticazione
+      // Verify authentication
       const session = await auth();
 
       if (!session?.user?.id) {
          return NextResponse.json(
-            { error: "Non autenticato. Effettua il login." },
+            { error: "Not authenticated. Please log in." },
             { status: 401 }
          );
       }
 
       const userId = session.user.id;
 
-      // Aggiorna tutte le notifiche non lette
+      // Update all unread notifications
       const result = await prisma.notification.updateMany({
          where: {
             userId: userId,
@@ -29,22 +29,22 @@ export async function PUT(request: NextRequest) {
          },
       });
 
-      // 🔥 Emetti evento WebSocket per sincronizzare tutte le tab
+      // 🔥 Emit WebSocket event to synchronize all tabs
       const io = getSocketInstance();
       if (io) {
          const roomName = `user:${userId}`;
          io.to(roomName).emit("notifications:all-read", { userId });
-         console.log(`📢 Tutte le notifiche segnate come lette per user ${userId} via WebSocket`);
+         console.log(`📢 All notifications marked as read for user ${userId} via WebSocket`);
       }
 
       return NextResponse.json({
-         message: "Tutte le notifiche segnate come lette",
+         message: "All notifications marked as read",
          count: result.count,
       });
    } catch (error) {
-      console.error("Errore PUT /api/notifications/mark-all-read:", error);
+      console.error("Error PUT /api/notifications/mark-all-read:", error);
       return NextResponse.json(
-         { error: "Errore del server" },
+         { error: "Server error" },
          { status: 500 }
       );
    }

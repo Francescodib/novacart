@@ -13,7 +13,7 @@ export function NotificationBell({ onClick, className = "" }: NotificationBellPr
    const [shake, setShake] = useState(false);
    const [prevCount, setPrevCount] = useState(0);
 
-   // Trigger animazione shake quando aumenta il contatore
+   // Trigger shake animation when counter increases
    useEffect(() => {
       if (unreadCount > prevCount && prevCount > 0) {
          setShake(true);
@@ -26,15 +26,15 @@ export function NotificationBell({ onClick, className = "" }: NotificationBellPr
       <button
          onClick={onClick}
          className={`
-            relative p-2 rounded-lg 
-            text-gray-300 hover:text-white hover:bg-gray-800 
+            relative p-2 rounded-lg
+            text-gray-300 hover:text-white hover:bg-gray-800
             transition-all duration-200
             ${shake ? "animate-[shake_0.5s_ease-in-out]" : ""}
             ${className}
          `}
-         aria-label={`Notifiche${unreadCount > 0 ? ` (${unreadCount} non lette)` : ""}`}
+         aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ""}`}
       >
-         {/* Icona Campanella SVG */}
+         {/* Bell Icon SVG */}
          <svg
             className="w-6 h-6"
             fill="none"
@@ -50,11 +50,11 @@ export function NotificationBell({ onClick, className = "" }: NotificationBellPr
             />
          </svg>
 
-         {/* Badge Contatore */}
+         {/* Counter Badge */}
          {unreadCount > 0 && (
             <span
                className="
-                  absolute -top-1 -right-1 
+                  absolute -top-1 -right-1
                   flex items-center justify-center
                   min-w-[20px] h-5 px-1.5
                   bg-red-500 text-white text-xs font-bold

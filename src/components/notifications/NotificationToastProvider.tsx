@@ -6,8 +6,8 @@ import { useNotificationStore } from "@/store/notificationStore";
 import type { Notification } from "@/store/notificationStore";
 
 /**
- * Provider che mostra automaticamente toast per nuove notifiche
- * Va inserito nel layout root
+ * Provider that automatically shows toasts for new notifications
+ * Should be inserted in the root layout
  */
 export function NotificationToastProvider() {
    const notifications = useNotificationStore((state) => state.notifications);
@@ -16,17 +16,17 @@ export function NotificationToastProvider() {
    useEffect(() => {
       const prevNotifications = prevNotificationsRef.current;
 
-      // Trova notifiche nuove (presenti in notifications ma non in prevNotifications)
+      // Find new notifications (present in notifications but not in prevNotifications)
       const newNotifications = notifications.filter(
          (notif) => !prevNotifications.some((prev) => prev.id === notif.id)
       );
 
-      // Mostra toast per ogni nuova notifica
+      // Show toast for each new notification
       newNotifications.forEach((notification) => {
          showNotificationToast(notification);
       });
 
-      // Aggiorna il ref
+      // Update ref
       prevNotificationsRef.current = notifications;
    }, [notifications]);
 
@@ -41,10 +41,10 @@ export function NotificationToastProvider() {
 }
 
 /**
- * Funzione helper per mostrare un toast personalizzato
+ * Helper function to show a custom toast
  */
 function showNotificationToast(notification: Notification) {
-   // Mappa tipi a icone/colori
+   // Map types to icons/colors
    const typeConfig: Record<string, { icon: string; color: string }> = {
       ORDER_SHIPPED: { icon: "📦", color: "bg-blue-500" },
       ORDER_DELIVERED: { icon: "✅", color: "bg-green-500" },
@@ -61,7 +61,7 @@ function showNotificationToast(notification: Notification) {
       color: "bg-gray-500",
    };
 
-   // Usa toast() normale invece di toast.custom() per evitare glitch
+   // Use regular toast() instead of toast.custom() to avoid glitches
    toast(
       (t) => (
          <div
@@ -73,17 +73,17 @@ function showNotificationToast(notification: Notification) {
             }}
             className="flex gap-3 cursor-pointer"
          >
-            {/* Icona */}
+            {/* Icon */}
             <div
                className={`
-                  flex-shrink-0 w-10 h-10 rounded-full ${config.color} 
+                  flex-shrink-0 w-10 h-10 rounded-full ${config.color}
                   flex items-center justify-center text-xl
                `}
             >
                {config.icon}
             </div>
 
-            {/* Contenuto */}
+            {/* Content */}
             <div className="flex-1 min-w-0">
                <h4 className="font-semibold text-white text-sm mb-1">
                   {notification.title}
@@ -93,7 +93,7 @@ function showNotificationToast(notification: Notification) {
                </p>
             </div>
 
-            {/* Pulsante Chiudi */}
+            {/* Close Button */}
             <button
                onClick={(e) => {
                   e.stopPropagation();
