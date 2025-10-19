@@ -19,19 +19,19 @@ export function NotificationItem({
 }: NotificationItemProps) {
    // Map notification types to icons/colors
    const typeConfig = {
-      ORDER_SHIPPED: { icon: "📦", color: "bg-blue-500" },
-      ORDER_DELIVERED: { icon: "✅", color: "bg-green-500" },
+      ORDER_SHIPPED: { icon: "📦", color: "bg-emerald-500" },
+      ORDER_DELIVERED: { icon: "✅", color: "bg-emerald-600" },
       ORDER_CANCELLED: { icon: "❌", color: "bg-red-500" },
-      PROMOTION: { icon: "🎉", color: "bg-purple-500" },
-      NEW_OFFER: { icon: "✨", color: "bg-yellow-500" },
-      PRICE_DROP: { icon: "💰", color: "bg-green-600" },
-      BACK_IN_STOCK: { icon: "🔄", color: "bg-indigo-500" },
+      PROMOTION: { icon: "🎉", color: "bg-emerald-500" },
+      NEW_OFFER: { icon: "✨", color: "bg-emerald-500" },
+      PRICE_DROP: { icon: "💰", color: "bg-emerald-600" },
+      BACK_IN_STOCK: { icon: "🔄", color: "bg-emerald-500" },
       LOW_STOCK: { icon: "⚠️", color: "bg-orange-500" },
    };
 
    const config = typeConfig[notification.type as keyof typeof typeConfig] || {
       icon: "🔔",
-      color: "bg-gray-500",
+      color: "bg-neutral-700",
    };
 
    return (
@@ -39,17 +39,17 @@ export function NotificationItem({
          onClick={() => onClick?.(notification)}
          className={`
             ${compact ? "p-3" : "p-4"}
-            ${notification.read ? "bg-gray-800 opacity-75" : "bg-gray-900"}
-            ${onClick ? "cursor-pointer hover:bg-gray-700" : ""}
-            border border-gray-700 rounded-lg transition-all duration-200
-            ${!notification.read ? "border-l-4 border-l-blue-500" : ""}
+            ${notification.read ? "bg-neutral-950 opacity-70" : "bg-neutral-900"}
+            ${onClick ? "cursor-pointer hover:bg-neutral-800" : ""}
+            border rounded-lg transition-all duration-200
+            ${!notification.read ? "border-emerald-500/30" : "border-neutral-800"}
          `}
       >
          <div className="flex gap-3">
             {/* Icon */}
             <div
                className={`
-                  flex-shrink-0 w-10 h-10 rounded-full ${config.color}
+                  flex-shrink-0 w-10 h-10 rounded-lg ${config.color}
                   flex items-center justify-center text-xl
                `}
             >
@@ -63,17 +63,17 @@ export function NotificationItem({
                      {notification.title}
                   </h4>
                   {!compact && !notification.read && (
-                     <span className="flex-shrink-0 w-2 h-2 bg-blue-500 rounded-full"></span>
+                     <span className="flex-shrink-0 w-2 h-2 bg-emerald-500 rounded-full"></span>
                   )}
                </div>
 
-               <p className={`text-gray-300 text-sm ${compact ? "line-clamp-1" : "line-clamp-2"}`}>
+               <p className={`text-neutral-300 text-sm ${compact ? "line-clamp-1" : "line-clamp-2"}`}>
                   {notification.message}
                </p>
 
                {!compact && (
-                  <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
-                     <span className="px-2 py-0.5 bg-gray-700 rounded">
+                  <div className="flex items-center gap-2 mt-2 text-xs text-neutral-500">
+                     <span className="px-2 py-0.5 bg-neutral-800 border border-neutral-700 rounded uppercase tracking-wider font-medium">
                         {notification.type.replace(/_/g, " ")}
                      </span>
                      <span>
@@ -97,7 +97,7 @@ export function NotificationItem({
                            e.stopPropagation();
                            onMarkAsRead(notification.id);
                         }}
-                        className="p-1.5 text-green-400 hover:text-green-300 hover:bg-gray-700 rounded transition"
+                        className="p-1.5 text-emerald-400 hover:text-emerald-300 hover:bg-neutral-800 rounded transition"
                         title="Mark as read"
                      >
                         <svg
@@ -122,7 +122,7 @@ export function NotificationItem({
                            e.stopPropagation();
                            onDelete(notification.id);
                         }}
-                        className="p-1.5 text-red-400 hover:text-red-300 hover:bg-gray-700 rounded transition"
+                        className="p-1.5 text-red-400 hover:text-red-300 hover:bg-neutral-800 rounded transition"
                         title="Delete"
                      >
                         <svg

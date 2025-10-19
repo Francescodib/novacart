@@ -26,8 +26,8 @@ export function NotificationBell({ onClick, className = "" }: NotificationBellPr
       <button
          onClick={onClick}
          className={`
-            relative p-2 rounded-lg
-            text-gray-300 hover:text-white hover:bg-gray-800
+            relative p-3 rounded-lg border border-neutral-800
+            text-neutral-300 hover:text-white hover:border-emerald-500/20
             transition-all duration-200
             ${shake ? "animate-[shake_0.5s_ease-in-out]" : ""}
             ${className}
@@ -57,9 +57,8 @@ export function NotificationBell({ onClick, className = "" }: NotificationBellPr
                   absolute -top-1 -right-1
                   flex items-center justify-center
                   min-w-[20px] h-5 px-1.5
-                  bg-red-500 text-white text-xs font-bold
-                  rounded-full border-2 border-gray-900
-                  animate-pulse
+                  bg-emerald-500 text-white text-xs font-bold
+                  rounded-full border-2 border-black
                "
             >
                {unreadCount > 99 ? "99+" : unreadCount}

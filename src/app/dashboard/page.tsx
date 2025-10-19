@@ -33,9 +33,9 @@ export default function DashboardPage() {
    // Show loading while loading session
    if (status === "loading") {
       return (
-         <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+         <div className="min-h-screen bg-black flex items-center justify-center">
             <div className="text-center">
-               <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mb-4"></div>
+               <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mb-4"></div>
                <p className="text-white text-lg">Loading...</p>
             </div>
          </div>
@@ -45,52 +45,54 @@ export default function DashboardPage() {
    // Redirect to login if not authenticated
    if (status === "unauthenticated" || !session?.user?.id) {
       return (
-         <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+         <div className="min-h-screen bg-black flex items-center justify-center p-4">
             <div className="text-center max-w-md">
-               <h1 className="text-3xl font-bold text-white mb-4">🔒 Access Required</h1>
-               <p className="text-gray-300 mb-6">
-                  You must be authenticated to access the dashboard.
-               </p>
-               <Link
-                  href="/auth/login?callbackUrl=/dashboard"
-                  className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
-               >
-                  Go to Login
-               </Link>
-               <p className="text-gray-500 text-sm mt-4">
-                  For testing, use the{" "}
-                  <a href="/test-socket" className="text-blue-400 underline">
-                     test page
-                  </a>
-               </p>
+               <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-8">
+                  <h1 className="text-3xl font-bold text-white mb-4">Access Required</h1>
+                  <p className="text-neutral-400 mb-6">
+                     You must be authenticated to access the dashboard.
+                  </p>
+                  <Link
+                     href="/auth/login?callbackUrl=/dashboard"
+                     className="inline-block bg-emerald-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-600 transition"
+                  >
+                     Go to Login
+                  </Link>
+                  <p className="text-neutral-500 text-sm mt-4">
+                     For testing, use the{" "}
+                     <a href="/test-socket" className="text-emerald-400 hover:underline">
+                        test page
+                     </a>
+                  </p>
+               </div>
             </div>
          </div>
       );
    }
 
    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      <div className="min-h-screen bg-black">
          {/* Navbar */}
-         <nav className="bg-gray-900/50 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-30">
+         <nav className="bg-neutral-950 border-b border-neutral-800 sticky top-0 z-30">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                <div className="flex items-center justify-between h-16">
                   {/* Logo */}
                   <div className="flex items-center gap-3">
-                     <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                     <div className="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center">
                         <span className="text-white font-bold text-xl">N</span>
                      </div>
-                     <h1 className="text-xl font-bold text-white">NovaCart</h1>
+                     <h1 className="text-xl font-semibold text-white">NovaCart</h1>
                   </div>
 
                   {/* Navigation */}
-                  <div className="hidden md:flex items-center gap-6">
-                     <a href="#" className="text-gray-300 hover:text-white transition">
+                  <div className="hidden md:flex items-center gap-8">
+                     <a href="#" className="text-neutral-400 hover:text-white transition font-medium text-sm">
                         Products
                      </a>
-                     <a href="#" className="text-gray-300 hover:text-white transition">
+                     <a href="#" className="text-neutral-400 hover:text-white transition font-medium text-sm">
                         Offers
                      </a>
-                     <a href="#" className="text-gray-300 hover:text-white transition">
+                     <a href="#" className="text-neutral-400 hover:text-white transition font-medium text-sm">
                         Cart
                      </a>
                   </div>
@@ -98,11 +100,11 @@ export default function DashboardPage() {
                   {/* Actions */}
                   <div className="flex items-center gap-4">
                      {/* Connection Status (for debug only) */}
-                     <div className="hidden sm:flex items-center gap-2">
+                     <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-neutral-900 border border-neutral-800 rounded-lg">
                         <div
-                           className={`w-2 h-2 rounded-full ${connected ? "bg-green-500" : "bg-red-500"}`}
+                           className={`w-2 h-2 rounded-full ${connected ? "bg-emerald-500" : "bg-red-500"}`}
                         ></div>
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs text-neutral-400 font-medium">
                            {connected ? "Online" : "Offline"}
                         </span>
                      </div>
@@ -124,25 +126,25 @@ export default function DashboardPage() {
                      <div className="relative">
                         <button
                            onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                           className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-white text-sm font-medium hover:bg-gray-600 transition"
+                           className="w-9 h-9 bg-neutral-800 border border-neutral-700 rounded-lg flex items-center justify-center text-white text-sm font-medium hover:bg-neutral-700 transition"
                         >
                            {session?.user?.name?.charAt(0).toUpperCase() || "U"}
                         </button>
 
                         {/* Dropdown Menu */}
                         {isUserMenuOpen && (
-                           <div className="absolute right-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded-lg shadow-xl py-1 z-50">
-                              <div className="px-4 py-2 border-b border-gray-700">
+                           <div className="absolute right-0 mt-2 w-48 bg-neutral-900 border border-neutral-800 rounded-xl shadow-2xl py-2 z-50">
+                              <div className="px-4 py-3 border-b border-neutral-800">
                                  <p className="text-sm font-medium text-white truncate">
                                     {session?.user?.name || "User"}
                                  </p>
-                                 <p className="text-xs text-gray-400 truncate">
+                                 <p className="text-xs text-neutral-400 truncate mt-0.5">
                                     {session?.user?.email}
                                  </p>
                               </div>
                               <button
                                  onClick={() => signOut({ callbackUrl: "/auth/login" })}
-                                 className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700 transition"
+                                 className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-neutral-800 transition"
                               >
                                  Logout
                               </button>
@@ -155,70 +157,70 @@ export default function DashboardPage() {
          </nav>
 
          {/* Main Content */}
-         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             {/* Hero Section */}
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 mb-8 shadow-xl">
-               <h2 className="text-3xl font-bold text-white mb-2">
-                  Welcome to NovaCart! 🛒
+            <div className="bg-neutral-900 border border-emerald-500/20 rounded-2xl p-10 mb-12">
+               <h2 className="text-4xl font-bold text-white mb-3">
+                  Welcome to NovaCart
                </h2>
-               <p className="text-blue-100 mb-4">
-                  Your e-commerce with real-time notifications. Receive instant updates
-                  about your orders, exclusive offers and much more!
+               <p className="text-neutral-400 mb-8 text-lg leading-relaxed max-w-2xl">
+                  Your e-commerce platform with real-time notifications. Receive instant updates
+                  about your orders, exclusive offers and much more.
                </p>
                <div className="flex gap-4">
-                  <button className="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition">
+                  <button className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-lg font-medium transition">
                      Discover Products
                   </button>
-                  <button className="bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-800 transition">
+                  <button className="border-2 border-emerald-500 text-emerald-400 hover:bg-emerald-500/10 px-8 py-3 rounded-lg font-medium transition">
                      View Offers
                   </button>
                </div>
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-               <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+               <div className="bg-neutral-900 border border-emerald-500/20 rounded-xl p-6 hover:border-emerald-500/40 transition">
                   <div className="flex items-center justify-between mb-2">
-                     <h3 className="text-gray-400 text-sm font-medium">Unread Notifications</h3>
-                     <span className="text-2xl">📬</span>
+                     <h3 className="text-emerald-400 text-sm font-medium uppercase tracking-wider">Unread Notifications</h3>
+                     <span className="text-2xl opacity-80">📬</span>
                   </div>
-                  <p className="text-3xl font-bold text-white">{unreadCount}</p>
+                  <p className="text-4xl font-bold text-white">{unreadCount}</p>
                </div>
 
-               <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
+               <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 hover:border-emerald-500/40 transition">
                   <div className="flex items-center justify-between mb-2">
-                     <h3 className="text-gray-400 text-sm font-medium">Active Orders</h3>
-                     <span className="text-2xl">📦</span>
+                     <h3 className="text-emerald-400 text-sm font-medium uppercase tracking-wider">Active Orders</h3>
+                     <span className="text-2xl opacity-80">📦</span>
                   </div>
-                  <p className="text-3xl font-bold text-white">3</p>
+                  <p className="text-4xl font-bold text-white">3</p>
                </div>
 
-               <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
+               <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 hover:border-emerald-500/40 transition">
                   <div className="flex items-center justify-between mb-2">
-                     <h3 className="text-gray-400 text-sm font-medium">Available Offers</h3>
-                     <span className="text-2xl">🎉</span>
+                     <h3 className="text-emerald-400 text-sm font-medium uppercase tracking-wider">Available Offers</h3>
+                     <span className="text-2xl opacity-80">🎉</span>
                   </div>
-                  <p className="text-3xl font-bold text-white">12</p>
+                  <p className="text-4xl font-bold text-white">12</p>
                </div>
             </div>
 
             {/* Products Section */}
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
-               <h3 className="text-xl font-bold text-white mb-4">Featured Products</h3>
-               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-8">
+               <h3 className="text-2xl font-bold text-white mb-6">Featured Products</h3>
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                   {[1, 2, 3, 4].map((i) => (
                      <div
                         key={i}
-                        className="bg-gray-700 rounded-lg p-4 hover:bg-gray-600 transition cursor-pointer"
+                        className="group bg-neutral-900 border border-neutral-800 rounded-xl p-5 hover:border-emerald-500 transition-all cursor-pointer"
                      >
-                        <div className="w-full h-32 bg-gray-600 rounded-lg mb-3 flex items-center justify-center text-4xl">
+                        <div className="w-full h-32 bg-neutral-950 rounded-lg mb-4 flex items-center justify-center text-5xl border border-neutral-800">
                            📱
                         </div>
-                        <h4 className="text-white font-semibold mb-1">Product {i}</h4>
-                        <p className="text-gray-400 text-sm mb-2">Short description</p>
+                        <h4 className="text-white font-semibold mb-1 text-lg">Product {i}</h4>
+                        <p className="text-neutral-400 text-sm mb-4">Short description</p>
                         <div className="flex items-center justify-between">
-                           <span className="text-blue-400 font-bold">€99.99</span>
-                           <button className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition">
+                           <span className="text-white font-bold text-xl">€99.99</span>
+                           <button className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm transition font-medium">
                               Add
                            </button>
                         </div>
@@ -228,14 +230,16 @@ export default function DashboardPage() {
             </div>
 
             {/* Info Footer */}
-            <div className="mt-8 text-center">
-               <p className="text-gray-500 text-sm">
-                  💡 <strong>Try notifications:</strong> Go to the{" "}
-                  <a href="/test-socket" className="text-blue-400 hover:text-blue-300 underline">
-                     test page
-                  </a>{" "}
-                  to create notifications and see the system in action!
-               </p>
+            <div className="mt-12 text-center">
+               <div className="inline-block bg-neutral-900 border border-neutral-800 rounded-xl px-6 py-4">
+                  <p className="text-neutral-400 text-sm">
+                     <span className="text-emerald-400 font-medium">Try notifications:</span> Go to the{" "}
+                     <a href="/test-socket" className="text-emerald-400 hover:underline font-medium">
+                        test page
+                     </a>{" "}
+                     to create notifications and see the system in action
+                  </p>
+               </div>
             </div>
          </main>
       </div>

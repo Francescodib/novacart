@@ -49,14 +49,14 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
 
          {/* Panel */}
          <div className="absolute right-0 mt-2 w-96 max-w-[calc(100vw-2rem)] z-50">
-            <div className="bg-gray-900 border border-gray-700 rounded-lg shadow-2xl overflow-hidden">
+            <div className="bg-neutral-900 border border-neutral-800 rounded-xl shadow-2xl overflow-hidden">
                {/* Header */}
-               <div className="p-4 border-b border-gray-700">
-                  <div className="flex items-center justify-between mb-3">
+               <div className="p-5 border-b border-neutral-800">
+                  <div className="flex items-center justify-between mb-4">
                      <h3 className="text-lg font-bold text-white">Notifications</h3>
                      <button
                         onClick={onClose}
-                        className="text-gray-400 hover:text-white transition"
+                        className="text-neutral-400 hover:text-white transition"
                         aria-label="Close"
                      >
                         <svg
@@ -82,10 +82,10 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                         <button
                            onClick={() => setFilter("all")}
                            className={`
-                              px-3 py-1 rounded-md text-sm font-medium transition
+                              px-3 py-1.5 rounded-lg text-sm font-medium transition
                               ${filter === "all"
-                                 ? "bg-blue-500 text-white"
-                                 : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                                 ? "bg-emerald-500 text-white"
+                                 : "bg-neutral-950 border border-neutral-800 text-neutral-300 hover:bg-neutral-800"
                               }
                            `}
                         >
@@ -94,10 +94,10 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                         <button
                            onClick={() => setFilter("unread")}
                            className={`
-                              px-3 py-1 rounded-md text-sm font-medium transition
+                              px-3 py-1.5 rounded-lg text-sm font-medium transition
                               ${filter === "unread"
-                                 ? "bg-blue-500 text-white"
-                                 : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                                 ? "bg-emerald-500 text-white"
+                                 : "bg-neutral-950 border border-neutral-800 text-neutral-300 hover:bg-neutral-800"
                               }
                            `}
                         >
@@ -109,7 +109,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                      {unreadNotifications.length > 0 && (
                         <button
                            onClick={handleMarkAllAsRead}
-                           className="text-xs text-blue-400 hover:text-blue-300 transition"
+                           className="text-xs text-emerald-400 hover:text-emerald-300 transition font-medium"
                         >
                            Mark all
                         </button>
@@ -121,19 +121,19 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                <div className="max-h-[500px] overflow-y-auto">
                   {loading ? (
                      <div className="p-8 text-center">
-                        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-                        <p className="mt-2 text-sm text-gray-400">Loading...</p>
+                        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
+                        <p className="mt-2 text-sm text-neutral-400">Loading...</p>
                      </div>
                   ) : displayedNotifications.length === 0 ? (
                      <div className="p-8 text-center">
-                        <div className="text-5xl mb-2">📭</div>
-                        <p className="text-gray-400 font-medium">
+                        <div className="text-5xl mb-3">📭</div>
+                        <p className="text-neutral-300 font-medium">
                            {filter === "unread" ? "No unread notifications" : "No notifications"}
                         </p>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-neutral-500 mt-2">
                            {filter === "unread"
-                              ? "All notifications have been read!"
-                              : "When you receive notifications, they will appear here."}
+                              ? "All notifications have been read"
+                              : "When you receive notifications, they will appear here"}
                         </p>
                      </div>
                   ) : (
@@ -162,10 +162,10 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
 
                {/* Footer */}
                {displayedNotifications.length > 0 && (
-                  <div className="p-3 border-t border-gray-700 bg-gray-800">
+                  <div className="p-3 border-t border-neutral-800 bg-neutral-950">
                      <button
                         onClick={onClose}
-                        className="w-full text-center text-sm text-blue-400 hover:text-blue-300 font-medium transition"
+                        className="w-full text-center text-sm text-emerald-400 hover:text-emerald-300 font-medium transition"
                      >
                         Close
                      </button>
